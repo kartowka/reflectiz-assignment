@@ -1,0 +1,77 @@
+version: '3.9'
+services:
+  postgres:
+    container_name: postgresDB
+    hostname: postgres
+    image: postgres:alpine
+    ports:
+      - '5432:5432'
+    env_file:
+      - postgres.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - kartowka-network
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq/
+      - rabbitmq-data:/var/log/rabbitmq
+    networks:
+      - kartowka-network
+  postgres-admin:
+    container_name: postgres-admin
+    image: dpage/pgadmin4:latest
+    ports:
+      - '5433:5433'
+    restart: always
+    env_file:
+      - postgres.admin.env
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - kartowka-network
+  reflectiz-api:
+    container_name: reflectiz-api
+    build:
+      context: ./API/
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    restart: always
+    depends_on:
+      - rabbitmq
+      - postgres
+    env_file:
+      - ./API/prod.env
+    networks:
+      - kartowka-network
+  reflectiz-analysis-service:
+    container_name: reflectiz-analysis-service
+    build:
+      context: ./queue/
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    restart: always
+    depends_on:
+      - rabbitmq
+      - postgres
+    env_file:
+      - ./queue/prod.env
+    networks:
+      - kartowka-network
+volumes:
+  postgres-data:
+  rabbitmq-data:
+  pgadmin-data:
+networks:
+  kartowka-network:
+    external: true

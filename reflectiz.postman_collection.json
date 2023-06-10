@@ -1,0 +1,74 @@
+{
+	"info": {
+		"_postman_id": "0daaccaa-b56f-4c43-926c-05c9404bef63",
+		"name": "reflectiz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21908672"
+	},
+	"item": [
+		{
+			"name": "GET domain info",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "reflectiz-api-key",
+						"value": "7tlm6KHm1wlR1jgV2YqI9xSRwneQDcH6eLL1ADHNEvg=",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/domain/sce.ac.il",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"domain",
+						"sce.ac.il"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST domain to queue",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "reflectiz-api-key",
+						"value": "7tlm6KHm1wlR1jgV2YqI9xSRwneQDcH6eLL1ADHNEvg=",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hostname\":\"sce.ac.il\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/domain",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"domain"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

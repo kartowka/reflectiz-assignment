@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model domain_info {
+  id                  Int                   @id @default(autoincrement())
+  domain_name         String                @unique @db.VarChar(255)
+  whois_data          Json?                 @db.Json
+  virustotal_data     Json?                 @db.Json
+  created_at          DateTime?             @default(now()) @db.Timestamp(6)
+  updated_at          DateTime?             @default(now()) @db.Timestamp(6)
+  domain_info_history domain_info_history[]
+  status              Status
+}
+
+model domain_info_history {
+  id              Int         @id @default(autoincrement())
+  domain_id       Int
+  whois_data      Json?       @db.Json
+  virustotal_data Json?       @db.Json
+  created_at      DateTime?   @default(now()) @db.Timestamp(6)
+  domain_info     domain_info @relation(fields: [domain_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
