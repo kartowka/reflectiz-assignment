@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import { Prisma, PrismaClient } from '@prisma/client'
 import sendMessageToQueue from '../utils/queue/config'
 import { logger } from '../utils/logger/config'
+import { Status } from '../consts'
 const prisma = new PrismaClient()
 export const getDomainNameByHostname = async (req: Request, res: Response) => {
 	try {
@@ -13,7 +14,7 @@ export const getDomainNameByHostname = async (req: Request, res: Response) => {
 				domain_name: hostname,
 			},
 		})
-		if (data?.status === 'PENDING') {
+		if (data?.status === Status.PENDING) {
 			return res.status(StatusCodes.OK).json({ StatusCodes: StatusCodes.OK, message: `${hostname} currently being scanned,please check back later.` })
 		}
 		if (!data) {
@@ -47,8 +48,8 @@ export const createOrUpdateRecord = async (hostname: string) => {
 		where: {
 			domain_name: hostname,
 		},
-		create: { status: 'PENDING', domain_name: hostname },
-		update: { status: 'PENDING', updated_at: new Date() },
+		create: { status: Status.PENDING, domain_name: hostname },
+		update: { status: Status.PENDING, updated_at: new Date() },
 	})
 	console.log(test)
 }
